@@ -5,6 +5,7 @@ This script automatically updates the version in llmtricks/_version.py using the
 import re
 import pathlib
 import subprocess
+import tomli  # You'll need to add this to your build dependencies
 
 
 def git_check_uncommitted_changes():
@@ -36,7 +37,7 @@ def get_git_commit_hash():
 
 def update_version():
     """
-    automatically update in llmtricks/_version.py using the version in setup.py
+    automatically update in llmtricks/_version.py using the version in pyproject.toml
     """
     changes = git_check_uncommitted_changes()
     if changes:
@@ -44,15 +45,12 @@ def update_version():
         print(changes)
         return -1
 
-    setup_path = pathlib.Path("setup.py")
+    pyproject_path = pathlib.Path("pyproject.toml")
     version_path = pathlib.Path("llmtricks/_version.py")
 
-    with open(setup_path, "r", encoding="utf-8") as f:
-        content = f.read()
-        version_match = re.search(r'version\s*=\s*"([^"]+)"', content)
-        if not version_match:
-            raise ValueError("Could not find version in setup.py")
-        version = version_match.group(1)
+    with open(pyproject_path, "rb") as f:
+        pyproject_data = tomli.load(f)
+        version = pyproject_data["project"]["version"]
 
     # Update version in _version.py
     with open(version_path, "w", encoding="utf-8") as f:
