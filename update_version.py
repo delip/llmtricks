@@ -9,10 +9,13 @@ import subprocess
 
 def git_check_uncommitted_changes():
     try:
-        subprocess.check_output(["git", "status", "--porcelain"])
+        return (
+            subprocess.check_output(["git", "status", "--porcelain"])
+            .decode("utf-8")
+            .strip()
+        )
     except Exception as e:
-        return False
-    return True
+        return ""
 
 
 def get_git_commit_hash():
@@ -30,6 +33,12 @@ def update_version():
     """
     automatically update in llmtricks/_version.py using the version in setup.py
     """
+    changes = git_check_uncommitted_changes()
+    if changes:
+        print("WARNING: You have uncommitted changes!!")
+        print(changes)
+        return -1
+
     setup_path = pathlib.Path("setup.py")
     version_path = pathlib.Path("llmtricks/_version.py")
 
@@ -47,7 +56,9 @@ def update_version():
 
     print(f"Updated version in {version_path} to {version}")
     print(f"Git commit hash: {get_git_commit_hash()}")
+    return 0
 
 
 if __name__ == "__main__":
-    update_version()
+    status = update_version()
+    exit(status)
