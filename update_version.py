@@ -9,10 +9,15 @@ import subprocess
 
 def git_check_uncommitted_changes():
     try:
-        return (
-            subprocess.check_output(["git", "status", "--porcelain"])
-            .decode("utf-8")
-            .strip()
+        return "\n".join(
+            [
+                x
+                for x in subprocess.check_output(["git", "status", "--porcelain"])
+                .decode("utf-8")
+                .strip()
+                .split("\n")
+                if "_version.py" not in x
+            ]
         )
     except Exception as e:
         return ""
