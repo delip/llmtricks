@@ -4,6 +4,26 @@ This script automatically updates the version in llmtricks/_version.py using the
 
 import re
 import pathlib
+import subprocess
+
+
+def git_check_uncommitted_changes():
+    try:
+        subprocess.check_output(["git", "status", "--porcelain"])
+    except Exception as e:
+        return False
+    return True
+
+
+def get_git_commit_hash():
+    try:
+        return (
+            subprocess.check_output(["git", "rev-parse", "HEAD"])
+            .decode("utf-8")
+            .strip()
+        )
+    except Exception as e:
+        return "None"
 
 
 def update_version():
@@ -23,8 +43,10 @@ def update_version():
     # Update version in _version.py
     with open(version_path, "w", encoding="utf-8") as f:
         f.write(f'__version__ = "{version}"\n')
+        f.write(f'__git_commit_hash__ = "{get_git_commit_hash()}"\n')
 
     print(f"Updated version in {version_path} to {version}")
+    print(f"Git commit hash: {get_git_commit_hash()}")
 
 
 if __name__ == "__main__":
