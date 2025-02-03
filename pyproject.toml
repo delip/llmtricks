@@ -21,3 +21,6 @@ requires-python = ">=3.10"
 
 [project.urls]
 Homepage = "https://github.com/delip/llmtricks"
+
+[tool.setuptools.packages.find]
+exclude = ["notebooks"]
