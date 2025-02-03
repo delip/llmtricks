@@ -1,3 +1,4 @@
 tomli
 openai
 groq
+anthropic

@@ -1,5 +1,5 @@
 source activate readertools
-rm -Rf build dist llmtricks.egg-info
+sh clean.sh
 pip install -r requirements.txt
 python update_version.py
 # check if update_version.py failed
