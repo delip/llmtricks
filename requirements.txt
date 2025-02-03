@@ -1,4 +1,5 @@
 tomli
+python-dotenv
 openai
 groq
 anthropic
